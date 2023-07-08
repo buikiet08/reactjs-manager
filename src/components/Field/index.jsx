@@ -14,7 +14,7 @@ function Field({label,error,renderField,onChange,...props}) {
                 {label}
             </label>}
             {
-                renderField ? renderField({...props,label,error,onChange,id}) : <input onChange={_onChange} className="form-control w-full form-control-sm !mb-0 rounded-xl" {...props} />
+                renderField ? renderField({...props,label,error,onChange,id}) : <input onChange={_onChange} className="border-none outline-none bg-transparent w-full form-control-sm !mb-0 rounded-xl" {...props} />
             }
             {error && <ErrorStyle>{error}</ErrorStyle>}
         </FieldStyle>

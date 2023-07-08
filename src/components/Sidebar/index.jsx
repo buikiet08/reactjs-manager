@@ -1,74 +1,73 @@
-import { auth } from '@/firebase/config';
-import { useAuth } from '@/hooks/useAuth'
-import { logoutThunkAction } from '@/store/authReducer';
-import { PlusSquareOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Collapse, Row, Typography, message } from 'antd'
-import { signOut } from 'firebase/auth';
-import React from 'react'
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import { getUser } from '@/utils/token'
+import { BookOutlined, DashboardOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Menu } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom';
+const subnav = [
+    { title: "Nhân sự" },
+    { title: "Bộ phận" },
 
-const { Panel } = Collapse;
-const PanelStyled = styled(Panel)`
- &&& {
-  .ant-collapse-header, p {
-    color: white;
-    padding:12px 0;
-  }
+];
+const pathLink = [
+    { path: '/nhan-su' },
+    { path: '/bo-phan' },
 
-  .ant-collapse-content-box {
-    padding: 0 24px;
-  }
+];
+const items2 = [
+    UserOutlined,
+    BookOutlined,
+].map((icon, index) => {
+    const key = String(index + 1);
+    return {
+        key: `sub${key}`,
+        icon: React.createElement(icon),
+        label: subnav.map((item, i) => {
+            return (
+                <Link key={i} to={pathLink[index].path} className="pl-0">
+                    {String(i + 1) === key && item.title}
+                </Link>
+            );
+        }),
+    };
+});
 
-  .btn-plus{
-    padding:0;
-    border:0;
-    display:flex;
-    align-items:center;
-  }
- }
-`
-const LinkStyled = styled(Typography.Link)`
- display:block;
- margin-bottom:5px;
- color:white !important;
-`
 function Sidebar() {
-  const { user } = useAuth()
-  const dispatch = useDispatch()
-  const handleLogOut  = () => {
-    signOut(auth).then(() => {
-      // Sign-out successful.
-      message.success('Đăng xuất thành công')
-      dispatch(logoutThunkAction())
-    }).catch((error) => {
-      // An error happened.
-      console.log(error)
-    });
-  }
+    const location = useLocation()
+    const { fullname } = getUser()
+    const lastName = fullname?.split(" ").slice(-1)[0];
+    const [pathCurrent, setPathCurrent] = useState(null)
+    useEffect(() => {
+        pathLink.forEach((item, idx) => {
+            if (item.path === location.pathname) {
+                setPathCurrent(`sub${idx + 1}`);
+            }
+        })
+    }, [location.pathname])
+    return (
+        <div className='w-[250px] bg-[#2a3042] h-screen overflow-hidden flex flex-col'>
+            <div className='h-[70px] flex justify-center items-center'>
+                <p className='text-xl font-semibold text-white'>Hi, {lastName}</p>
+            </div>
 
-  return (
-    <div className='bg-slate-400 p-6 text-white h-screen'>
-      <Col className='flex items-center justify-between' span={24}>
-        <div className='flex items-center'>
-          <Avatar src={user?.photoURL} />
-          <Typography.Text className='ml-2 text-base'>{user?.displayName}</Typography.Text>
+            <div className='flex-1'>
+                <div className='py-[20px] px-[26px] text-white'>
+                    <Link to={'/'} className='flex items-center font-bold leading-5'><DashboardOutlined className='text-lg mr-3' /> Dashboards</Link>
+                </div>
+                <Menu
+                    mode='inline'
+                    selectedKeys={[pathCurrent]}
+                    defaultOpenKeys={["sub1"]}
+                    style={{
+                        height: "100%",
+                        borderRight: 0,
+                        background: "transparent",
+                        color: " #fff",
+                    }}
+                    items={items2}
+                />
+            </div>
         </div>
-        <Button ghost onClick={handleLogOut}>Đăng xuất</Button>
-      </Col>
-      <Col span={24}>
-        <Collapse ghost defaultActiveKey={['1']} className='w-full'>
-          <PanelStyled header='Danh sách phòng' key='1'>
-            <LinkStyled>Phòng 1</LinkStyled>
-            <LinkStyled>Phòng 2</LinkStyled>
-            <LinkStyled>Phòng 3</LinkStyled>
-            <LinkStyled>Phòng 4</LinkStyled>
-            <Button ghost className='btn-plus' icon={<PlusSquareOutlined />}>Thêm phòng</Button>
-          </PanelStyled>
-        </Collapse>
-      </Col>
-    </div>
-  )
+    )
 }
 
 export default Sidebar

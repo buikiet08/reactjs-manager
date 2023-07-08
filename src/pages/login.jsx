@@ -1,8 +1,5 @@
-import { signInWithPopup } from 'firebase/auth';
-import { Col, Image, Row, Typography } from 'antd'
+import { Col, Image, Row, Typography, message } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { auth, db, provider, providerGg } from '@/firebase/config';
-import { collection, addDoc } from "firebase/firestore";
 import { useDispatch } from 'react-redux';
 import { loginThunkAction } from '@/store/authReducer';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,56 +13,24 @@ import { handleError } from '@/utils/handleError';
 
 function Login() {
     const dispatch = useDispatch()
-    const [test,setState] = useState(10)
-    const ab = test + 1
-    console.log(ab)
-
+    const navigate = useNavigate()
     const form = useForm({
-        username: [required(), regexp('email')],
-        password: [required()]
+        username: [required()],
+        password: [required(), regexp('password')]
     })
     const onsubmit = async () => {
-        console.log('vào 3')
         try {
             if (form.validate()) {
-                console.log(form.values())
+                console.log(form.values)
+                await dispatch(loginThunkAction(form.values)).unwrap()
+                message.success('Đăng nhập thành công')
+                navigate('/')
             }
         } catch (error) {
             handleError(error)
         }
     }
-    // const handleFbLogin = async () => {
-    //     signInWithPopup(auth, provider)
-    //         .then(async (result) => {
-    //             const res = result
-    //             if (result?.user) {
-    //                 dispatch(loginThunkAction(result?.user))
-    //                 await addDoc(collection(db, "users"), {
-    //                     displayName: res?.displayName,
-    //                     email: res?.email,
-    //                     photoURL: res?.photoURL,
-    //                     uid: res?.displayName,
-    //                     providerId: res?.providerData[0].providerId
-    //                 });
-    //                 navigate('/')
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         });
-    // }
-    const handleGgLogin =  () => {
-        signInWithPopup(auth, providerGg)
-            .then(async (result) => {
-                console.log(result.user)
-                if (result?.user) {
-                    await dispatch(loginThunkAction(result?.user)).unwrap()
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-    }
+
     useEffect(() => {
         VanillaTilt.init(document.querySelector(".item-bg-home"), {
             max: 25,
@@ -75,7 +40,6 @@ function Login() {
         //It also supports NodeList
         VanillaTilt.init(document.querySelectorAll(".item-bg-home"));
     }, [])
-    console.log('vào 2')
 
     return (
         <main className="homepage !pt-0" id="main">
@@ -112,11 +76,6 @@ function Login() {
                                 <Button style={{ marginBottom: 20, width: '100%' }} onClick={onsubmit}>Login</Button>
                             </div>
 
-                            <div className='or'>or</div>
-
-                            <Button onClick={handleGgLogin} style={{ marginBottom: 5, width: '100%', background: 'transparent', color: '#000', border: '1px solid #ebebf5' }}>
-                                <img className='w-[30px] h-[30px] mr-4 m-0' src='/img/google.png' />Sign In with Google
-                            </Button>
                         </Col>
                         {
                             window.innerWidth >= 1024 &&

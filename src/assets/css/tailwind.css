@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body{
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 .or{
     position: relative;
@@ -40,4 +40,28 @@ body{
     color: #181748;
     font-size: 16px;
     font-weight: 500;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #2a3042;
+    border-radius: 4px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    border-radius: 4px;
 }
