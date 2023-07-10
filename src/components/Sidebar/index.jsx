@@ -1,21 +1,37 @@
+import { PATH } from '@/config/path';
 import { getUser } from '@/utils/token'
-import { BookOutlined, DashboardOutlined, UserOutlined } from '@ant-design/icons';
+import { BarChartOutlined, BellOutlined, BookOutlined, DashboardOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom';
+
 const subnav = [
     { title: "Nhân sự" },
     { title: "Bộ phận" },
 
 ];
+const subnavAdmin = [
+    { title: "Nhân sự" },
+    { title: "Bộ phận" },
+    { title: "Thông báo" },
+    { title: "Đăng ký thành viên" },
+    { title: "Thống kê" }
+]
 const pathLink = [
     { path: '/nhan-su' },
-    { path: '/bo-phan' },
-
+    { path: '/bo-phan' }
 ];
-const items2 = [
+const pathLinkAdmin = [
+    { path: PATH.admin.personnel },
+    { path: PATH.admin.tean },
+    { path: PATH.admin.notification },
+    { path: PATH.admin.resgiterUser },
+    { path: PATH.admin.statistical }
+];
+const items = [
     UserOutlined,
-    BookOutlined,
+    BookOutlined
+
 ].map((icon, index) => {
     const key = String(index + 1);
     return {
@@ -31,10 +47,31 @@ const items2 = [
     };
 });
 
+const itemsAdmin = [
+    UserOutlined,
+    BookOutlined,
+    BellOutlined,
+    UsergroupAddOutlined,
+    BarChartOutlined
+].map((icon, index) => {
+    const key = String(index + 1);
+    return {
+        key: `sub${key}`,
+        icon: React.createElement(icon),
+        label: subnavAdmin.map((item, i) => {
+            return (
+                <Link key={i} to={pathLinkAdmin[index].path} className="pl-0">
+                    {String(i + 1) === key && item.title}
+                </Link>
+            );
+        }),
+    };
+});
+
 function Sidebar() {
     const location = useLocation()
-    const { fullname } = getUser()
-    const lastName = fullname?.split(" ").slice(-1)[0];
+    const user = getUser()
+    const lastName = user?.fullname?.split(" ").slice(-1)[0];
     const [pathCurrent, setPathCurrent] = useState(null)
     useEffect(() => {
         pathLink.forEach((item, idx) => {
@@ -51,7 +88,7 @@ function Sidebar() {
 
             <div className='flex-1'>
                 <div className='py-[20px] px-[26px] text-white'>
-                    <Link to={'/'} className='flex items-center font-bold leading-5'><DashboardOutlined className='text-lg mr-3' /> Dashboards</Link>
+                    <Link to={user?.admin === 0 ? '/' : '/admin'} className='flex items-center font-bold leading-5'><DashboardOutlined className='text-lg mr-3' /> Dashboards</Link>
                 </div>
                 <Menu
                     mode='inline'
@@ -63,7 +100,7 @@ function Sidebar() {
                         background: "transparent",
                         color: " #fff",
                     }}
-                    items={items2}
+                    items={user?.admin === 0 ? items : itemsAdmin}
                 />
             </div>
         </div>

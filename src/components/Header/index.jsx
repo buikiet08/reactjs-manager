@@ -1,9 +1,9 @@
 import { SearchOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import Field from '../Field'
-import { Avatar, Button, Popover, Tooltip } from 'antd'
-import { getUser } from '@/utils/token'
-import { Link } from 'react-router-dom'
+import { Avatar, Button, Popover, Tooltip, message } from 'antd'
+import { clearToken, clearUser, getUser } from '@/utils/token'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Header() {
     const user = getUser()
@@ -11,6 +11,12 @@ function Header() {
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
     };
+    const onLogout = () => {
+        clearToken()
+        clearUser()
+        message.success('Bạn đã đăng xuất')
+        window.location.reload(false)
+    }
     return (
         <div className='h-[70px] bg-white flex justify-between items-center px-[24px]'>
             {/* search */}
@@ -33,8 +39,8 @@ function Header() {
                     <Popover
                         content={<div className='flex flex-col'>
                             <Link to='/thong-tin-ca-nhan' className='py-[6px]'>Thông tin cá nhân</Link>
-                            <Link className='py-[6px]'>Đổi mật khẩu</Link>
-                            <Link className='py-[6px] text-red-600 hover:text-red-700'>Đăng xuất</Link>
+                            <Link to='/doi-mat-khau' className='py-[6px]'>Đổi mật khẩu</Link>
+                            <Link onClick={onLogout} className='py-[6px] text-red-600 hover:text-red-700'>Đăng xuất</Link>
                         </div>}
                         title=""
                         trigger="click"

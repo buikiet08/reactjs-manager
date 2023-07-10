@@ -24,7 +24,7 @@ function Login() {
                 console.log(form.values)
                 await dispatch(loginThunkAction(form.values)).unwrap()
                 message.success('Đăng nhập thành công')
-                navigate('/')
+                // navigate('/')
             }
         } catch (error) {
             handleError(error)
@@ -43,9 +43,6 @@ function Login() {
 
     return (
         <main className="homepage !pt-0" id="main">
-            {
-                console.log('vào 1')
-            }
             <div className="auth !max-w-full">
                 <div className="wrap !max-w-full !bg-white !p-0">
                     <Row justify='center' style={{ height: '100vh' }}>

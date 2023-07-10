@@ -5,7 +5,9 @@ export const userService = {
     getProfile(id){
         return http.get(`${API}/user/${id}`)
     },
-    
+    register(data){
+        return http.post(`${API}/register`, data)
+    },
     updateProfile(data) {
         return http.patch(`${API}`, data)
     },

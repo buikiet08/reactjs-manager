@@ -50,13 +50,13 @@ body{
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #2a3042;
+    background: transparent;
     border-radius: 4px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #c3c2c2;
     border-radius: 4px;
 }
 
@@ -64,4 +64,26 @@ body{
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
     border-radius: 4px;
+}
+
+.page-item{
+    
+    
+    overflow: hidden;
+}
+.page-link{
+    padding:2px 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background-color: #c3c2c2;
+}
+.page-item.active .page-link{
+    background-color: #1677ff;
+}
+.page-link-arrow{
+    color: #282828;
+    background-color: transparent;
 }
