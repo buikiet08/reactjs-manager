@@ -6,6 +6,7 @@ import { userService } from '@/services/user'
 import { handleError } from '@/utils/handleError'
 import { getUser } from '@/utils/token'
 import { confirm, minMax, regexp, required } from '@/utils/validate'
+import { LoadingOutlined } from '@ant-design/icons'
 import { Col, Row, Typography, message } from 'antd'
 import React from 'react'
 
@@ -28,7 +29,6 @@ function changePassword() {
   const onsubmit = async () => {
     try {
       if (form.validate()) {
-        console.log(form.values)
         const res = await registerService()
         message.success(res.message)
         form.reset()
@@ -44,22 +44,22 @@ function changePassword() {
         <div className="wrap !max-w-full !bg-white !p-0">
           <Row justify='center' style={{ height: '100vh' }}>
             <Col span={24} className='py-[50px] px-[70px] lg:pr-[90px]'>
-              <Typography className='mt-4 mb-8'>
-                <Typography.Title className='flex items-center justify-start !font-extrabold' level={1}>Thay đổi mật khẩu</Typography.Title>
+              <Typography className='mt-4 mb-6'>
+                <Typography.Title className='flex items-center justify-start !font-extrabold' level={3}>Thay đổi mật khẩu</Typography.Title>
               </Typography>
               <Row>
                 <Col span={12} className='mb-[20px] px-2'>
-                  <Field label="Mật khẩu hiện tại" placeholder='Old Password' type='password' {...form.register('oldPassword')} />
+                  <Field autoComplete="off" label="Mật khẩu hiện tại" placeholder='Mật khẩu hiện tại' type='password' {...form.register('oldPassword')} />
                 </Col>
                 <Col span={12} className='mb-[20px] px-2'>
-                  <Field label="Mật khẩu mới" placeholder='New Password' type='password' {...form.register('newPassword')} />
+                  <Field label="Mật khẩu mới" placeholder='Mật khẩu mới' type='password' {...form.register('newPassword')} />
                 </Col>
                 <Col span={12} className='mb-[20px] px-2'>
-                  <Field label="Nhập lại mật khẩu" placeholder='Confirm Password' type='password' {...form.register('confirmPassword')} />
+                  <Field label="Nhập lại mật khẩu" placeholder='Nhập lại mật khẩu mới' type='password' {...form.register('confirmPassword')} />
                 </Col>
 
                 <Col span={24}>
-                  <Button style={{ marginBottom: 20, width: '100%' }} disabled={loading} onClick={onsubmit}>Register</Button>
+                  <Button style={{ marginBottom: 20, width: '100%' }} disabled={loading} onClick={onsubmit}>{loading && <LoadingOutlined className='mr-2' />}Thay đổi mật khẩu</Button>
                 </Col>
               </Row>
 

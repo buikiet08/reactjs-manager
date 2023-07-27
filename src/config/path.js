@@ -8,5 +8,6 @@ export const PATH = {
         notification: ADMIN + '/thong-bao',
         resgiterUser : ADMIN + '/dang-ky-thanh-vien',
         statistical : ADMIN + '/thong-ke',
+        changePassword: ADMIN + '/doi-mat-khau'
     }
 }

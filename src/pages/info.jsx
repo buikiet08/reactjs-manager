@@ -31,13 +31,12 @@ function Info() {
     setSelectedDate(dataString)
   };
   // Lấy ngày hiện tại
-  const currentDate = moment();
+  const currentDate = moment().format('DD-MM-YYYY');
   // Hàm kiểm tra và disable những ngày lớn hơn ngày hiện tại
   const disabledDate = (current) => {
     return current && current > currentDate;
   };
 
-  console.log(user)
   const form = useForm({
     fullname: [],
     username: [],
@@ -45,7 +44,7 @@ function Info() {
     date: [required()],
     address: [required()],
   }, { initialValue: user })
-  console.log(file,user, form.values)
+
   const onSubmit = async () => {
     const dateChange = moment(selectedDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
     const checkOldData = object.isEqual(user, { ...form.values, date: dateChange }, 'date', 'phone', 'address')
@@ -78,7 +77,6 @@ function Info() {
             if (res?.avatar) {
               avatar = res?.avatar
             }
-            console.log(res)
             dispatch(setUserAction({ ...user, avatar: avatar }))
             message.success('Cập nhật avatar thành công')
           }).catch(handleError)
@@ -153,7 +151,7 @@ function Info() {
                         size='small'
                         className='border-none w-full p-0 rounded-md overflow-hidden mb-0'
                         placeholder='Nhập ngày sinh'
-                        defaultValue={selectedDate ? moment(selectedDate, 'YYYY-MM-DD') : null}
+                        defaultValue={user?.date ? moment(user?.date, 'DD-MM-YYYY') : moment(selectedDate, 'YYYY-MM-DD')}
                         onChange={handleDateChange}
                         disabledDate={disabledDate}
                         format="DD-MM-YYYY"

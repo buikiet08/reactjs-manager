@@ -73,6 +73,10 @@ export const routers = [
                         element:<DetailPersonal />
                     },
                     {
+                        element:<ChangePassword />,
+                        path:PATH.admin.changePassword
+                    },
+                    {
                         path:PATH.admin.resgiterUser,
                         element:<Register />
                     }

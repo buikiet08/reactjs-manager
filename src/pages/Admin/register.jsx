@@ -6,15 +6,11 @@ import { useQuery } from '@/hooks/useQuery'
 import { userService } from '@/services/user'
 import { handleError } from '@/utils/handleError'
 import { confirm, minMax, regexp, required } from '@/utils/validate'
+import { LoadingOutlined } from '@ant-design/icons'
 import { Col, Row, Typography, message } from 'antd'
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 
 function Register() {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    
     const form = useForm({
         fullname: [required()],
         username: [required(), regexp('email')],
@@ -35,7 +31,6 @@ function Register() {
     const onsubmit = async () => {
         try {
             if (form.validate()) {
-                console.log(form.values)
                 const res = await registerService()
                 message.success(res.message)
                 form.reset()
@@ -51,32 +46,32 @@ function Register() {
                 <div className="wrap !max-w-full !bg-white !p-0">
                     <Row justify='center' style={{ height: '100vh' }}>
                         <Col span={24} className='py-[50px] px-[70px] lg:pr-[90px]'>
-                            <Typography className='mt-4 mb-8'>
-                                <Typography.Title className='flex items-center justify-start !font-extrabold' level={1}>Đăng ký thành viên</Typography.Title>
-                                <Typography.Text className='text-[#85849d] text-xl'>Enter the infomation you entered while</Typography.Text>
+                            <Typography className='mt-4 mb-6'>
+                                <Typography.Title className='flex items-center justify-start !font-extrabold' level={3}>Đăng ký thành viên</Typography.Title>
+                                <Typography.Text className='text-[#85849d] text-base'>Enter the infomation you entered while</Typography.Text>
                             </Typography>
 
                             <Row>
 
                                 <Col span={12} className='mb-[20px] px-2'>
-                                    <Field label='Fullname' placeholder='Fullname' type='text' {...form.register('fullname')} />
+                                    <Field label='Họ & Tên' placeholder='Họ & Tên' type='text' {...form.register('fullname')} />
                                 </Col>
                                 <Col span={12} className='mb-[20px] px-2'>
                                     <Field label='Email' placeholder='Email' type='text' {...form.register('username')} />
                                 </Col>
                                 <Col span={12} className='mb-[20px] px-2'>
-                                    <Field label="Password" placeholder='Password' type='password' {...form.register('password')} />
+                                    <Field label="Mật khẩu" placeholder='Mật khẩu' type='password' {...form.register('password')} />
                                 </Col>
                                 <Col span={12} className='mb-[20px] px-2'>
-                                    <Field label="Confirm Password" placeholder='Confirm Password' type='password' {...form.register('confirmPassword')} />
+                                    <Field label="Nhập lại mật khẩu" placeholder='Nhập lại mật khẩu' type='password' {...form.register('confirmPassword')} />
                                 </Col>
                                 <Col span={12} className='mb-[20px] px-2'>
                                     <Field
                                         label='Bộ phận'
                                         {...form.register('id_team')}
                                         renderField={(props) => (
-                                            <Select {...props} >
-                                                <option selected value>Chọn bộ phận *</option>
+                                            <Select disable={true} {...props} >
+                                                <option selected value disabled className='text-gray-400'>Chọn bộ phận *</option>
                                                 <option value='1'>Ban điều hành</option>
                                                 <option value='2'>Nhân sự</option>
                                                 <option value='3'>Back End</option>
@@ -94,8 +89,8 @@ function Register() {
                                         label='Cấp bậc'
                                         {...form.register('id_level')}
                                         renderField={(props) => (
-                                            <Select {...props} >
-                                                <option selected value>Chọn cấp bậc *</option>
+                                            <Select disable={true} {...props} >
+                                                <option selected value disabled className='text-gray-400'>Chọn cấp bậc *</option>
                                                 <option value='1'>Trưởng nhóm</option>
                                                 <option value='2'>Nhân viên</option>
                                             </Select>
@@ -104,7 +99,7 @@ function Register() {
                                 </Col>
 
                                 <Col span={24}>
-                                    <Button style={{ marginBottom: 20, width: '100%' }} disabled={loading} onClick={onsubmit}>Register</Button>
+                                    <Button style={{ marginBottom: 20, width: '100%' }} disable={loading} onClick={onsubmit}>{loading && <LoadingOutlined className='mr-2' />}Đăng ký thành viên</Button>
                                 </Col>
                             </Row>
 

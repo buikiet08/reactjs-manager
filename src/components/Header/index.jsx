@@ -16,6 +16,7 @@ import { personalService } from '@/services/personal'
 import queryString from 'query-string'
 import { API_DEFAULT, avatarDefault } from '@/config/api'
 import { PersonalCard, PersonalCardLoading } from '../PersonalCard'
+import { PATH } from '@/config/path'
 
 function Header() {
     const { user } = useAuth()
@@ -23,6 +24,7 @@ function Header() {
     const [valueSearch,setValueSearch] = useState('')
     const { user: dataCheckin, checkoutLoading, checkinLoading } = useUser()
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [timeLateCheckin, setTimelateCheckin] = useState(null)
     const [timeLateCheckout, setTimelateCheckout] = useState(null)
 
@@ -70,6 +72,7 @@ function Header() {
         await dispatch(cleartCheckinsAction())
         message.success('Bạn đã đăng xuất')
         window.location.reload(false)
+        navigate('/login')
     }
     // check in
     const onCheckin = () => {
@@ -144,7 +147,7 @@ function Header() {
             >
                 <div className='bg-[#ced4da] rounded-[30px] py-2 px-4 flex items-center w-full relative max-w-[360px]'>
                     <SearchOutlined className='text-[#495057] mr-2 cursor-pointer text-lg' />
-                    <input value={valueSearch} className='flex-1 w-full bg-transparent border-none outline-none' placeholder='Nhập tên,số điện thoại...' onChange={onChangeSearch} />
+                    <input value={valueSearch} type="text" autoComplete="off" className='flex-1 w-full bg-transparent border-none outline-none' placeholder='Nhập tên,số điện thoại...' onChange={onChangeSearch} />
                     <CloseCircleOutlined onClick={clearSearch} className={`absolute text-gray-400 right-3 top-[50%] translate-y-[-50%] cursor-pointer hidden ${valueSearch.trim() !== '' && '!block'}`} />
                 </div>
             </Popover>
@@ -203,8 +206,11 @@ function Header() {
                     </div>
                     <Popover
                         content={<div className='flex flex-col'>
-                            <Link to='/thong-tin-ca-nhan' className='py-[6px]'>Thông tin cá nhân</Link>
-                            <Link to='/doi-mat-khau' className='py-[6px]'>Đổi mật khẩu</Link>
+                            {
+                                user?.admin === 0 &&
+                                <Link to='/thong-tin-ca-nhan' className='py-[6px]'>Thông tin cá nhân</Link>
+                            }
+                            <Link to={user?.admin === 0 ? '/doi-mat-khau' : PATH.admin.changePassword} className='py-[6px]'>Đổi mật khẩu</Link>
                             <Link onClick={onLogout} className='py-[6px] text-red-600 hover:text-red-700'>Đăng xuất</Link>
                         </div>}
                         title=""
