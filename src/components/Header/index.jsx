@@ -14,7 +14,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { useQuery } from '@/hooks/useQuery'
 import { personalService } from '@/services/personal'
 import queryString from 'query-string'
-import { avatarDefault } from '@/config/api'
+import { API_DEFAULT, avatarDefault } from '@/config/api'
 import { PersonalCard, PersonalCardLoading } from '../PersonalCard'
 
 function Header() {
@@ -213,7 +213,7 @@ function Header() {
                         onOpenChange={handleOpenChange}
                     >
                         <Tooltip title={user?.title_level}>
-                            <Avatar size={'large'} src={<img src={user?.avatar ? `http://localhost:3001/images/${user?.avatar}` : avatarDefault} alt="avatar" />} />
+                            <Avatar size={'large'} src={<img src={user?.avatar ? `${API_DEFAULT}/images/${user?.avatar}` : avatarDefault} alt="avatar" />} />
                         </Tooltip>
                     </Popover>
                 </div>

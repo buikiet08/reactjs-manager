@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:3001', // Thay đổi thành địa chỉ và cổng Node.js của bạn
+      target: import.meta.env.VITE_DEFAULT, // Thay đổi thành địa chỉ và cổng Node.js của bạn
       changeOrigin: true,
     })
   );

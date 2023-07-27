@@ -5,6 +5,7 @@ import { UserOutlined } from '@ant-design/icons'
 import { PATH } from '@/config/path'
 import { Link, generatePath } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { urlFile } from '@/config/api'
 
 export const PersonalCard = ({id,avatar, fullname, title_name,showCreatae}) => {
     const {user} = useAuth()
@@ -23,7 +24,7 @@ export const PersonalCard = ({id,avatar, fullname, title_name,showCreatae}) => {
                         lg: 36,
                         xl: 44,
                     }}
-                    src={<img src={avatar ? `http://localhost:3001/images/${avatar}` : 'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'} alt="avatar" />}
+                    src={<img src={avatar ? urlFile(avatar) : 'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'} alt="avatar" />}
                 />
             </Link>
             <div className='flex flex-col justify-center items-start flex-1'>

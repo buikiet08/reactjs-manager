@@ -1,3 +1,4 @@
+import { API_DEFAULT } from '@/config/api'
 import { useAsync } from '@/hooks/useAsync'
 import { personalService } from '@/services/personal'
 import { RiseOutlined, UserOutlined } from '@ant-design/icons'
@@ -25,7 +26,7 @@ function InfoPersonal() {
                                     lg: 84,
                                     xl: 100,
                                 }}
-                                src={<img src={data?.avatar ? `http://localhost:3001/images/${data?.avatar}` : avatarDefault} alt="avatar" />}
+                                src={<img src={data?.avatar ? `${API_DEFAULT}/images/${data?.avatar}` : avatarDefault} alt="avatar" />}
                             />
                             <div className='flex flex-col justify-between'>
                                 <div>

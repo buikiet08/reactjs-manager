@@ -1,5 +1,6 @@
 import Field from '@/components/Field'
 import UploadFile from '@/components/UploadFile'
+import { API_DEFAULT, urlFile } from '@/config/api'
 import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
 import { useQuery } from '@/hooks/useQuery'
@@ -98,7 +99,7 @@ function Info() {
                 {(imagePreview, trigger) => (
                   <div className="w-[100px] h-[100px] rounded-full overflow-hidden cursor-pointer mb-2 relative group" onClick={trigger}>
                     {/* <span class="text">H</span> */}
-                    <img src={imagePreview || (user?.avatar && `http://localhost:3001/images/${user?.avatar}`) || avatarDefault} alt />
+                    <img src={imagePreview || (user?.avatar && urlFile(user?.avatar)) || avatarDefault} alt />
                     <div className="absolute top-0 left-0 w-full h-full bg-[rgba(8,8,8,0.2)] hidden group-hover:block">
                       <div className='flex justify-center items-center gap-2 h-full'>
                         <CameraOutlined className='text-white cursor-pointer text-base' />

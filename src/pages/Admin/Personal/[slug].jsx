@@ -1,4 +1,5 @@
 import Button from '@/components/Button'
+import { API_DEFAULT, avatarDefault } from '@/config/api'
 import { useAsync } from '@/hooks/useAsync'
 import { personalService } from '@/services/personal'
 import { AntDesignOutlined, RiseOutlined, UserOutlined } from '@ant-design/icons'
@@ -61,7 +62,7 @@ function DetailPersonal() {
                                     xl: 96,
                                 }}
                                 className='border-[4px] border-solid border-white shadow-sm absolute left-4 top-[64px]'
-                                src={<img src={'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'} alt="avatar" />}
+                                src={<img src={detailUser?.data?.avatar ? `${API_DEFAULT}/images/${detailUser?.data?.avatar}` : avatarDefault} alt="avatar" />}
                             />
                         </div>
                         <div className='relative rounded-md bg-white shadow-sm overflow-hidden p-3'>
