@@ -67,12 +67,12 @@ function Header() {
         }
     }, [value.trim()])
     const onLogout = async () => {
+        navigate('/login')
         clearToken()
         clearUser()
         await dispatch(cleartCheckinsAction())
         message.success('Bạn đã đăng xuất')
         window.location.reload(false)
-        navigate('/login')
     }
     // check in
     const onCheckin = () => {
