@@ -1,23 +1,43 @@
-import { Button, Col, Row } from 'antd'
+import { avatarDefault, urlFile } from '@/config/api'
+import { PATH } from '@/config/path'
+import { EyeOutlined } from '@ant-design/icons'
+import { Avatar, Button, Col, Row, Tooltip } from 'antd'
 import React from 'react'
+import { Link, generatePath } from 'react-router-dom'
 
-function PersonalItem({index,fullname,title_name,phone,username,create_at, total_day, onOpendetail}) {
+function PersonalItem({ id, index, avatar, fullname, title_name, title_level, phone, username, create_at, create_date, detail }) {
+    const path = generatePath(PATH.admin.personnelDetail, { id })
+
     return (
         <Row className='py-3 bg-white'>
-            <Col className='text-center' span={2}>{index}</Col>
-            <Col className='text-center' span={4}>{fullname}</Col>
-            <Col className='text-center' span={2}>{title_name}</Col>
-            <Col className='text-center' span={3}>{phone == ""? 'Chưa cập nhật': phone}</Col>
-            <Col className='text-center' span={3}>{username}</Col>
-            <Col className='text-center' span={3}>{create_at}</Col>
-            <Col className='text-center' span={2}>{total_day}</Col>
-
-            <Col span={5} className='flex justify-center items-center gap-2'>
-                <Button onClick={onOpendetail} type='primary' shape="round" size={'medium'} className='bg-[#1677ff]'>Chi tiết</Button>
-                {/* <Button type='primary' shape="round" size={'medium'} className='bg-[#f0c92cc6] !hover:bg-[#f0c92cc6]'>Nhắc nhở</Button>
-                <Button type='primary' shape="round" size={'medium'} className='bg-[#8e8f90] !hover:bg-[#8e8f90]'>Khóa tài khoản</Button>
-                <Button type='primary' shape="round" size={'medium'} className='bg-red-500 !hover:bg-red-500'>Xóa ài khoản</Button> */}
+            <Col className='flex justify-center items-center' span={1}>{index}</Col>
+            <Col className='text-start' span={5}>
+                <Avatar
+                    size={{
+                        md: 36,
+                        lg: 40,
+                        xl: 44,
+                    }}
+                    className='mr-2'
+                    src={<img src={avatar ? urlFile(avatar) : avatarDefault} alt="avatar" />}
+                />
+                {fullname}
             </Col>
+            <Col className='flex justify-center items-center' span={3}>{title_name}</Col>
+            {
+                !detail &&
+                <Col className='flex justify-center items-center' span={3}>{title_level}</Col>
+            }
+            <Col className='flex justify-center items-center' span={3}>{phone == "" ? 'Chưa cập nhật' : phone}</Col>
+            <Col className='flex justify-center items-center' span={4}>{username}</Col>
+            <Col className='flex justify-center items-center' span={3}>{create_at}</Col>
+            <Col className='flex justify-center items-center' span={2}>{create_date}</Col>
+            {
+                detail &&
+                <Col span={3} className='flex justify-center items-center gap-2'>
+                    <Tooltip title='Chi tiết'><Link to={path}><EyeOutlined /></Link></Tooltip>
+                </Col>
+            }
         </Row>
     )
 }

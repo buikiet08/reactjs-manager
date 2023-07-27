@@ -7,18 +7,19 @@ import Field from '@/components/Field';
 import Button from '@/components/Button';
 import { useForm } from '@/hooks/useForm';
 import { regexp, required } from '@/utils/validate';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, LoadingOutlined } from '@ant-design/icons';
 import { handleError } from '@/utils/handleError';
 
 
 function Login() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const [loading,setLoading] = useState(false)
     const form = useForm({
         username: [required()],
         password: [required(), regexp('password')]
     })
     const onsubmit = async () => {
+        setLoading(true)
         try {
             if (form.validate()) {
                 console.log(form.values)
@@ -28,6 +29,8 @@ function Login() {
             }
         } catch (error) {
             handleError(error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -56,12 +59,12 @@ function Login() {
 
                             <div className="ct_login">
                                 <div className='mb-[20px]'>
-                                    <Field label='Email' type='text' {...form.register('username')} />
+                                    <Field label='Email' placeholder='Nhập email' type='text' {...form.register('username')} />
                                 </div>
                                 <div className='mb-[20px]'>
-                                    <Field label="Password" type='password' {...form.register('password')} />
+                                    <Field label="Password" placeholder='Nhập password' type='password' {...form.register('password')} />
                                 </div>
-                                <div className="remember">
+                                {/* <div className="remember">
                                     <label className="btn-remember">
                                         <div>
                                             <input type="checkbox" />
@@ -69,8 +72,8 @@ function Login() {
                                         <p className='font-xl'>Remember me</p>
                                     </label>
                                     <Link className="font-bold whitespace-nowrap bg-gradient-to-r from-[#5dadfb] to-[#6c64fc] text-transparent bg-clip-text text-base">Forgot password?</Link>
-                                </div>
-                                <Button style={{ marginBottom: 20, width: '100%' }} onClick={onsubmit}>Login</Button>
+                                </div> */}
+                                <Button disabled={loading} style={{ marginBottom: 20, width: '100%' }} onClick={onsubmit}>{loading && <LoadingOutlined className='mr-2' />}Login</Button>
                             </div>
 
                         </Col>
@@ -79,9 +82,9 @@ function Login() {
                             <Col span={12} className='p-[20px] bg-gradient-to-bl to-[#d8d1f8] from-[#acc3f7] flex justify-center items-center'>
                                 <div className='p-[50px] bg-[#ffffff38] text-white w-full max-w-[500px] pr-[80px] item-bg-home'>
                                     <div className='text-[58px] text-white font-bold whitespace-pre-wrap'>
-                                        <CaretRightOutlined /> Digital glatform for distance
+                                        <CaretRightOutlined /> Manager Team
                                     </div>
-                                    <div className='text-[58px] font-bold whitespace-pre-wrap text-[#16154e] mb-6'>learning.</div>
+                                    <div className='text-[58px] font-bold whitespace-pre-wrap text-[#16154e] mb-6'>{`<code />`}.</div>
 
                                     <p>You will never know everything.</p>
                                     <p>But will know more.</p>

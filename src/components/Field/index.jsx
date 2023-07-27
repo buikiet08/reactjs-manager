@@ -2,7 +2,7 @@ import { cn } from '@/utils'
 import React, { memo, useId } from 'react'
 import { ErrorStyle, FieldStyle } from './style'
 
-function Field({label,error,renderField,onChange,...props}) {
+function Field({label,error,renderField,onChange,classname,disable,value,...props}) {
     const id = useId()
 
     const _onChange = (ev) => {
@@ -14,7 +14,7 @@ function Field({label,error,renderField,onChange,...props}) {
                 {label}
             </label>}
             {
-                renderField ? renderField({...props,label,error,onChange,id}) : <input onChange={_onChange} className="border-none outline-none bg-transparent w-full form-control-sm !mb-0 rounded-xl" {...props} />
+                renderField ? renderField({...props,label,error,onChange,id}) : <input disabled={disable} value={value} onChange={_onChange} className={`border-none outline-none bg-transparent w-full form-control-sm !mb-0 rounded-xl ${classname}`} {...props} />
             }
             {error && <ErrorStyle>{error}</ErrorStyle>}
         </FieldStyle>

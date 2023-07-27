@@ -7,8 +7,8 @@ export const authService = {
     },
     register(data) {
         return http.post(`${API}/register`, data)
+    },
+    refreshToken(data) {
+        return http.post(`${API}/refreshToken`, data)
     }
-    // refreshToken(data) {
-    //     return http.post(`${AUTHENTICATION_API}/refresh-token`, data)
-    // }
 }

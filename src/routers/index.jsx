@@ -3,8 +3,11 @@ import { AuthRoute } from "@/components/AuthRoute";
 import { PrivateRoute } from "@/components/PrivateRoute";
 import { PATH } from "@/config/path";
 import HomeAdmin from "@/pages/Admin";
+import DetailPersonal from "@/pages/Admin/Personal/[slug]";
 import PersonnelAdmin from "@/pages/Admin/personnelAdmin";
 import Register from "@/pages/Admin/register";
+import InfoPersonal from "@/pages/[slug]";
+import Checkins from "@/pages/checkins";
 import Info from "@/pages/info";
 import Login from "@/pages/login";
 import Personnel from "@/pages/personnel";
@@ -32,6 +35,10 @@ export const routers = [
                         path:'/nhan-su'
                     },
                     {
+                        element: <InfoPersonal />,
+                        path:PATH.detail
+                    },
+                    {
                         element: <Team />,
                         path:'/bo-phan'
                     },
@@ -42,6 +49,10 @@ export const routers = [
                     {
                         element:<ChangePassword />,
                         path:'/doi-mat-khau'
+                    },
+                    {
+                        element: <Checkins />,
+                        path:'/chuyen-can'
                     }
                 ],
                 path:'/'
@@ -56,6 +67,10 @@ export const routers = [
                     {
                         path:PATH.admin.personnel,
                         element:<PersonnelAdmin />
+                    },
+                    {
+                        path:PATH.admin.personnelDetail,
+                        element:<DetailPersonal />
                     },
                     {
                         path:PATH.admin.resgiterUser,

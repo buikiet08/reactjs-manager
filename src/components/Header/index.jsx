@@ -1,36 +1,201 @@
-import { SearchOutlined } from '@ant-design/icons'
-import React, { useState } from 'react'
-import Field from '../Field'
-import { Avatar, Button, Popover, Tooltip, message } from 'antd'
+import { CheckCircleFilled, CloseCircleOutlined, LoadingOutlined, SearchOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
+import { Avatar, Button, Input, Popconfirm, Popover, Tooltip, message } from 'antd'
 import { clearToken, clearUser, getUser } from '@/utils/token'
 import { Link, useNavigate } from 'react-router-dom'
+import moment from 'moment/moment'
+import { useUser } from '@/hooks/useUser'
+import { useAuth } from '@/hooks/useAuth'
+import { useDispatch } from 'react-redux'
+import { checkinAction, checkoutAction, cleartCheckinsAction } from '@/store/userReducer'
+import { handleError } from '@/utils/handleError'
+import { timeCheckin, timeCheckout } from '@/utils/timeCheckin'
+import { useDebounce } from '@/hooks/useDebounce'
+import { useQuery } from '@/hooks/useQuery'
+import { personalService } from '@/services/personal'
+import queryString from 'query-string'
+import { avatarDefault } from '@/config/api'
+import { PersonalCard, PersonalCardLoading } from '../PersonalCard'
 
 function Header() {
-    const user = getUser()
+    const { user } = useAuth()
+    const [value, setValue] = useDebounce('')
+    const [valueSearch,setValueSearch] = useState('')
+    const { user: dataCheckin, checkoutLoading, checkinLoading } = useUser()
+    const dispatch = useDispatch()
+    const [timeLateCheckin, setTimelateCheckin] = useState(null)
+    const [timeLateCheckout, setTimelateCheckout] = useState(null)
+
     const [open, setOpen] = useState(false);
+    const [openSearch, setOpenSearch] = useState(false)
+    // search
+    const qs = queryString.stringify({
+        value: value
+    })
+    const { data, loading } = useQuery({
+        queryKey: [qs],
+        keepPrivousData: true,
+        queryFn: ({ signal }) => personalService.getAllPersonal(`?type=search&${qs}`, signal),
+        enabled: !!value,
+        dependencyList:[qs]
+    })
+
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
     };
-    const onLogout = () => {
+    // SEARCH
+    const handleOpenSearch = (newOpen) => {
+        if (value === '') {
+            setOpenSearch(false)
+        }
+        setOpenSearch(newOpen);
+    };
+    const onChangeSearch = (ev) => {
+        setValue(ev.target.value)
+        setValueSearch(ev.target.value)
+    }
+    const clearSearch = () => {
+        setValue('')
+        setValueSearch('')
+        setOpenSearch(false)
+    }
+    useEffect(() => {
+        if (value.trim() !== '') {
+            setOpenSearch(true)
+        }
+    }, [value.trim()])
+    const onLogout = async () => {
         clearToken()
         clearUser()
+        await dispatch(cleartCheckinsAction())
         message.success('Bạn đã đăng xuất')
         window.location.reload(false)
     }
+    // check in
+    const onCheckin = () => {
+        const currentDateTime = moment().format('DD-MM-YYYY HH:mm:ss');
+        const formattedLateTime = timeCheckin(currentDateTime.split(' ')[1])
+        setTimelateCheckin(formattedLateTime)
+    }
+    const confirmCheckin = async () => {
+        const currentDateTime = moment().format('DD-MM-YYYY HH:mm:ss');
+        try {
+            await dispatch(checkinAction({ id: user?.id, time: currentDateTime }))
+
+        } catch (error) {
+            handleError(error)
+        }
+    }
+    // check out
+    const onCheckout = () => {
+        const currentDateTime = moment().format('DD-MM-YYYY HH:mm:ss');
+        const formattedLateTime = timeCheckout(currentDateTime.split(' ')[1])
+        setTimelateCheckout(formattedLateTime)
+    }
+    const confirmCheckout = async () => {
+        const currentDateTime = moment().format('DD-MM-YYYY HH:mm:ss');
+        try {
+            await dispatch(checkoutAction({ id: user?.id, time: currentDateTime }))
+        } catch (error) {
+            handleError(error)
+        }
+    }
+    //xử lý reset checkin, checkout
+    // useEffect(() => {
+    //     const countdownDate = new Date();
+    //     countdownDate.setHours(23, 59, 59, 0); // Thiết lập thời gian tới 23:59:59
+
+    //     const intervalId = setInterval(async () => {
+    //         const now = new Date();
+    //         if (now >= countdownDate) {
+    //             // Thực hiện sự kiện khi đến thời gian 23:59:59
+    //             await dispatch(cleartCheckinsAction())
+    //             clearInterval(intervalId); // Dừng đếm ngược khi thời gian đã đến
+    //         }
+    //     }, 1000); // Kiểm tra mỗi giây
+
+    //     return () => {
+    //         clearInterval(intervalId); // Hủy bỏ interval khi component bị unmount
+    //     };
+    // }, []);
+
+
     return (
-        <div className='h-[70px] bg-white flex justify-between items-center px-[24px]'>
+        <div className='h-[70px] bg-white flex justify-between items-center px-[24px] shadow-sm'>
             {/* search */}
-            <div className='bg-[#ced4da] rounded-[30px] py-1 px-4 flex items-center'>
-                <SearchOutlined className='text-[#495057] mr-2 cursor-pointer text-lg' />
-                <Field placeholder='Search...' />
-            </div>
+            <Popover
+                content={
+                    data?.data.length > 0 ?
+                        <div className={`bg-white flex flex-col justify-start items-start gap-2 left-0 w-full max-w-[360px]`}>
+                            {
+                                loading ? Array.from(Array(2)).map((_, i) => <PersonalCardLoading key={i} />) :
+                                    data?.data?.map((item, index) => <PersonalCard key={item.id} {...item} />)
+                            }
+                        </div> :
+                        <div className={`bg-white w-full max-w-[360px] flex justify-center items-center`}>
+                            Không tìm thấy kết quả
+                        </div>
+                }
+                title=""
+                trigger="click"
+                overlayClassName='w-full max-w-[360px] h-full max-h-[300px] '
+                open={valueSearch.trim() !== '' && openSearch}
+                onOpenChange={handleOpenSearch}
+            >
+                <div className='bg-[#ced4da] rounded-[30px] py-2 px-4 flex items-center w-full relative max-w-[360px]'>
+                    <SearchOutlined className='text-[#495057] mr-2 cursor-pointer text-lg' />
+                    <input value={valueSearch} className='flex-1 w-full bg-transparent border-none outline-none' placeholder='Nhập tên,số điện thoại...' onChange={onChangeSearch} />
+                    <CloseCircleOutlined onClick={clearSearch} className={`absolute text-gray-400 right-3 top-[50%] translate-y-[-50%] cursor-pointer hidden ${valueSearch.trim() !== '' && '!block'}`} />
+                </div>
+            </Popover>
             <div className='flex items-center gap-2'>
-                <Button type="primary" shape="round" size={'medium'} className='bg-[#1677ff]'>
-                    Check in
-                </Button>
-                <Button type="primary" shape="round" size={'medium'} className='bg-[#1677ff]'>
-                    Check out
-                </Button>
+                {
+                    user?.admin === 0 && (
+                        <>
+                            {
+                                dataCheckin.checkin ?
+                                    <div className='py-[4px] px-[12px] rounded-[30px] bg-gray-300'>
+                                        {dataCheckin.checkin?.checkin_time?.split(' ')[1]}
+                                    </div> :
+                                    <Popconfirm
+                                        title="Bạn muốn check in"
+                                        description={`Thời gian bạn check in trễ: ${timeLateCheckin}`}
+                                        onConfirm={confirmCheckin}
+                                        onCancel={() => console.log('hủy thao tác')}
+                                        okText="Check in"
+                                        cancelText="No"
+                                        icon={<CheckCircleFilled className='text-green-500' />}
+
+                                    >
+                                        <Button onClick={onCheckin} disabled={dataCheckin.checkin} type="primary" shape="round" size={'medium'} className='disabled:text-white'>
+                                            {checkinLoading ? <LoadingOutlined /> : 'Check in'}
+                                        </Button>
+                                    </Popconfirm>
+                            }
+                            {
+                                dataCheckin.checkin && (
+                                    dataCheckin.checkout ?
+                                        <div className='py-[4px] px-[12px] rounded-[30px] bg-gray-300'>
+                                            {dataCheckin.checkout?.checkout_time?.split(' ')[1]}
+                                        </div> :
+                                        <Popconfirm
+                                            title="Bạn muốn check out"
+                                            description={`Thời gian bạn check out sớm: ${timeLateCheckout}`}
+                                            onConfirm={confirmCheckout}
+                                            onCancel={() => console.log('hủy thao tác')}
+                                            okText="Check out"
+                                            cancelText="No"
+                                            icon={<CheckCircleFilled className='text-green-500' />}
+
+                                        >
+                                            <Button onClick={onCheckout} disabled={dataCheckin.checkout} type="primary" shape="round" size={'medium'} className='disabled:text-white'>
+                                                {checkoutLoading ? <LoadingOutlined /> : 'Check out'}
+                                            </Button>
+                                        </Popconfirm>)
+                            }
+                        </>
+                    )
+                }
                 <div className='flex items-center ml-10'>
                     <div className='mr-3 flex justify-end flex-col items-end'>
                         <p>{user?.fullname}</p>
@@ -48,7 +213,7 @@ function Header() {
                         onOpenChange={handleOpenChange}
                     >
                         <Tooltip title={user?.title_level}>
-                            <Avatar size={'large'} src={<img src={'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'} alt="avatar" />} />
+                            <Avatar size={'large'} src={<img src={user?.avatar ? `http://localhost:3001/images/${user?.avatar}` : avatarDefault} alt="avatar" />} />
                         </Tooltip>
                     </Popover>
                 </div>

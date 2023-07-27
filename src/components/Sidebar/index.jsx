@@ -1,85 +1,27 @@
 import { PATH } from '@/config/path';
 import { getUser } from '@/utils/token'
-import { BarChartOutlined, BellOutlined, BookOutlined, DashboardOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BarChartOutlined, BellOutlined, BookOutlined, CheckCircleOutlined, DashboardOutlined, UserOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom';
 
 const subnav = [
-    { title: "Nhân sự" },
-    { title: "Bộ phận" },
-
+    { title: "Nhân sự", path: '/nhan-su', icon: <UserOutlined /> },
+    { title: "Bộ phận", path: '/bo-phan', icon: <BookOutlined /> },
+    { title: "Chuyên cần", path: '/chuyen-can', icon: <CheckCircleOutlined /> }
 ];
 const subnavAdmin = [
-    { title: "Nhân sự" },
-    { title: "Bộ phận" },
-    { title: "Thông báo" },
-    { title: "Đăng ký thành viên" },
-    { title: "Thống kê" }
+    { title: "Nhân sự", path: PATH.admin.personnel, icon: <UserOutlined /> },
+    { title: "Bộ phận", path: PATH.admin.tean, icon: <BookOutlined /> },
+    { title: "Thông báo", path: PATH.admin.notification, icon: <BellOutlined /> },
+    { title: "Đăng ký thành viên", path: PATH.admin.resgiterUser, icon: <UsergroupAddOutlined /> },
+    { title: "Thống kê", path: PATH.admin.statistical, icon: <BarChartOutlined /> }
 ]
-const pathLink = [
-    { path: '/nhan-su' },
-    { path: '/bo-phan' }
-];
-const pathLinkAdmin = [
-    { path: PATH.admin.personnel },
-    { path: PATH.admin.tean },
-    { path: PATH.admin.notification },
-    { path: PATH.admin.resgiterUser },
-    { path: PATH.admin.statistical }
-];
-const items = [
-    UserOutlined,
-    BookOutlined
-
-].map((icon, index) => {
-    const key = String(index + 1);
-    return {
-        key: `sub${key}`,
-        icon: React.createElement(icon),
-        label: subnav.map((item, i) => {
-            return (
-                <Link key={i} to={pathLink[index].path} className="pl-0">
-                    {String(i + 1) === key && item.title}
-                </Link>
-            );
-        }),
-    };
-});
-
-const itemsAdmin = [
-    UserOutlined,
-    BookOutlined,
-    BellOutlined,
-    UsergroupAddOutlined,
-    BarChartOutlined
-].map((icon, index) => {
-    const key = String(index + 1);
-    return {
-        key: `sub${key}`,
-        icon: React.createElement(icon),
-        label: subnavAdmin.map((item, i) => {
-            return (
-                <Link key={i} to={pathLinkAdmin[index].path} className="pl-0">
-                    {String(i + 1) === key && item.title}
-                </Link>
-            );
-        }),
-    };
-});
 
 function Sidebar() {
-    const location = useLocation()
+    const { pathname } = useLocation()
     const user = getUser()
     const lastName = user?.fullname?.split(" ").slice(-1)[0];
-    const [pathCurrent, setPathCurrent] = useState(null)
-    useEffect(() => {
-        pathLink.forEach((item, idx) => {
-            if (item.path === location.pathname) {
-                setPathCurrent(`sub${idx + 1}`);
-            }
-        })
-    }, [location.pathname])
     return (
         <div className='w-[250px] bg-[#2a3042] h-screen overflow-hidden flex flex-col'>
             <div className='h-[70px] flex justify-center items-center'>
@@ -90,18 +32,17 @@ function Sidebar() {
                 <div className='py-[20px] px-[26px] text-white'>
                     <Link to={user?.admin === 0 ? '/' : '/admin'} className='flex items-center font-bold leading-5'><DashboardOutlined className='text-lg mr-3' /> Dashboards</Link>
                 </div>
-                <Menu
-                    mode='inline'
-                    selectedKeys={[pathCurrent]}
-                    defaultOpenKeys={["sub1"]}
-                    style={{
-                        height: "100%",
-                        borderRight: 0,
-                        background: "transparent",
-                        color: " #fff",
-                    }}
-                    items={user?.admin === 0 ? items : itemsAdmin}
-                />
+                <div className='py-5 px-2 flex flex-col gap-2 justify-start items-start'>
+                    {
+                        (user?.admin === 0 ? subnav : subnavAdmin).map((i, index) => (
+                            <Link
+                                key={index}
+                                to={i.path}
+                                className={`text-white w-full flex items-center gap-3 px-[18px] py-2 rounded-md hover:bg-slate-600 ${pathname == i.path && 'bg-white hover:bg-white !text-gray-600'}`}
+                            >{i.icon} {i.title}</Link>
+                        ))
+                    }
+                </div>
             </div>
         </div>
     )
