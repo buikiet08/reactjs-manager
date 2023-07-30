@@ -9,7 +9,7 @@ import queryString from 'query-string'
 import React, { useState } from 'react'
 import { Link, generatePath, useLocation, useParams, useSearchParams } from 'react-router-dom'
 
-const listCategory = ['Ban điều hành', 'Nhân sự', 'BackEnd', 'FrontEnd', 'Devops', 'Tester', 'PA', 'QC']
+const listCategory = ['Ban điều hành', 'Nhân sự', 'BackEnd', 'FrontEnd', 'Devops', 'Tester', 'BA', 'QC']
 
 function Personnel() {
   const [search, setSearch] = useSearchParams()

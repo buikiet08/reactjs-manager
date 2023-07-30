@@ -78,7 +78,7 @@ function Register() {
                                                 <option value='4'>Front End</option>
                                                 <option value='5'>Devops</option>
                                                 <option value='6'>Tester</option>
-                                                <option value='7'>PA</option>
+                                                <option value='7'>BA</option>
                                                 <option value='8'>QC</option>
                                             </Select>
                                         )}

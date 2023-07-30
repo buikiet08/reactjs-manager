@@ -68,8 +68,7 @@ function Header() {
     }, [value.trim()])
     const onLogout = async () => {
         navigate('/login')
-        clearToken()
-        clearUser()
+        localStorage.clear()
         await dispatch(cleartCheckinsAction())
         message.success('Bạn đã đăng xuất')
         window.location.reload(false)

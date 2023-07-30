@@ -9,7 +9,7 @@ import queryString from 'query-string'
 import React from 'react'
 import { Link, generatePath, useSearchParams } from 'react-router-dom'
 
-const listCategory = ['Ban lãnh đạo', 'Nhân sự', 'BackEnd', 'FrontEnd', 'Devops', 'Tester', 'PA', 'QC']
+const listCategory = ['Ban lãnh đạo', 'Nhân sự', 'BackEnd', 'FrontEnd', 'Devops', 'Tester', 'BA', 'QC']
 function PersonnelAdmin() {
     const [search, setSearch] = useSearchParams()
     const currentPage = useCurrentPage()
